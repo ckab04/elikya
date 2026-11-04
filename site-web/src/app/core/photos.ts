@@ -33,7 +33,7 @@ export const VIDEO_AUBE = {
   poster: '/images/aube-poster.webp',
   width: 640,
   height: 360,
-  label: 'Le jour se lève sur un quartier de Kinshasa, en accéléré',
+  label: 'Un quartier de Kinshasa, du jour à la nuit, en accéléré',
 };
 
 export const CREDITS: readonly Credit[] = [

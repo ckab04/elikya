@@ -12,6 +12,15 @@ const PATHS = {
   check: 'M5 12.5 10 17l9-10',
   lock: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4',
   arrow: 'M5 12h14M13 6l6 6-6 6',
+  drop: 'M12 3s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11Z',
+  cup: 'M7 4h10l-1 16H8L7 4Zm0 5h10',
+  doc: 'M7 3h7l5 5v13H7V3Zm7 0v5h5M10 13h6M10 17h6',
+  users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm13 10v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8',
+  building: 'M4 21V5l8-3 8 3v16M9 21v-4h6v4M8 9h2M14 9h2M8 13h2M14 13h2',
+  heart: 'M12 20s-8-4.6-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6.4-8 11-8 11Z',
+  bolt: 'M13 2 4 14h7l-1 8 9-12h-7l1-8Z',
+  money: 'M3 7h18v10H3zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+  globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18',
 } as const;
 
 export type IconName = keyof typeof PATHS;

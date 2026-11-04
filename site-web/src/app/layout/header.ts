@@ -1,9 +1,12 @@
-import { Component, ElementRef, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { I18n, LocalPathPipe, TrPipe } from '../core/i18n';
 import { SITE } from '../core/site.config';
 import { Icon } from '../shared/icon';
+import { LangSwitch } from '../shared/lang-switch';
 
 export const NAV_LINKS = [
+  { path: '/', label: 'Accueil' },
   { path: '/services', label: 'Examens' },
   { path: '/tarifs', label: 'Tarifs' },
   { path: '/le-centre', label: 'Le centre' },
@@ -14,31 +17,32 @@ export const NAV_LINKS = [
 /** Sticky white bar: logo, five links, the call button. */
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Icon],
+  imports: [RouterLink, RouterLinkActive, Icon, LangSwitch, TrPipe, LocalPathPipe],
   host: { '(document:keydown.escape)': 'closeAndFocusToggle()' },
   template: `
     <header class="bar">
       <div class="container-site relative flex min-h-18 items-center justify-between gap-6">
-      <a routerLink="/" class="brand" (click)="close()">
+      <a [routerLink]="'/' | lp" class="brand" (click)="close()">
         <span class="brand__mark" aria-hidden="true">E</span>
         <span class="flex flex-col leading-tight">
           <span class="text-lead font-semibold">Elikya</span>
-          <span class="text-small text-muted max-sm:hidden">Centre de santé · Bumbu</span>
+          <span class="text-small whitespace-nowrap text-muted max-xl:hidden">{{ 'Centre de santé' | tr }} · Bumbu</span>
         </span>
       </a>
 
-      <nav id="main-nav" aria-label="Navigation principale" class="nav" [class.nav--open]="open()">
+      <nav id="main-nav" [attr.aria-label]="'Navigation principale' | tr" class="nav" [class.nav--open]="open()">
         <ul class="nav__list">
           @for (link of links; track link.path) {
             <li>
               <a
                 #firstLink
-                [routerLink]="link.path"
+                [routerLink]="link.path | lp"
                 routerLinkActive="is-active"
+                [routerLinkActiveOptions]="{ exact: link.path === '/' }"
                 ariaCurrentWhenActive="page"
                 class="nav__link"
                 (click)="close()"
-                >{{ link.label }}</a
+                >{{ link.label | tr }}</a
               >
             </li>
           }
@@ -46,7 +50,8 @@ export const NAV_LINKS = [
       </nav>
 
       <div class="flex items-center gap-3">
-        <a class="btn min-h-11! px-4! py-2!" [href]="'tel:' + site.phone"><app-icon name="phone" [size]="18" />Appeler</a>
+        <app-lang-switch />
+        <a class="btn min-h-11! px-3! py-2! sm:px-4!" [href]="'tel:' + site.phone" [attr.aria-label]="'Appeler' | tr"><app-icon name="phone" [size]="18" /><span class="max-sm:hidden" [class.call-label-ln]="i18n.lang() === 'ln'">{{ 'Appeler' | tr }}</span></a>
         <button
           #toggleBtn
           type="button"
@@ -55,13 +60,19 @@ export const NAV_LINKS = [
           [attr.aria-expanded]="open()"
           (click)="toggle()"
         >
-          {{ open() ? 'Fermer' : 'Menu' }}
+          {{ (open() ? 'Fermer' : 'Menu') | tr }}
         </button>
       </div>
       </div>
     </header>
   `,
   styles: `
+    /* Lingala labels are longer: between the menu breakpoint and 1536 px the call button keeps only its icon. */
+    @media (min-width: 1081px) and (max-width: 1535px) {
+      .call-label-ln {
+        display: none;
+      }
+    }
     .bar {
       position: sticky;
       top: 0;
@@ -103,6 +114,7 @@ export const NAV_LINKS = [
     }
     .nav__link {
       display: block;
+      white-space: nowrap;
       padding: 0.45rem 0.75rem;
       border-radius: 0.5rem;
       font-weight: 500;
@@ -130,7 +142,7 @@ export const NAV_LINKS = [
       text-underline-offset: 0.3em;
       cursor: pointer;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1080px) {
       .menu-toggle {
         display: inline-block;
       }
@@ -160,6 +172,7 @@ export const NAV_LINKS = [
 })
 export class Header {
   protected readonly site = SITE;
+  protected readonly i18n = inject(I18n);
   protected readonly links = NAV_LINKS;
   protected readonly open = signal(false);
 

@@ -1,5 +1,7 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { I18n, LocalPathPipe, TrPipe } from '../core/i18n';
 import { RouterLink } from '@angular/router';
+import { Icon } from './icon';
 import { EXAMS, FEATURED_EXAMS, formatFc, formatUsd, PRICES_CONFIRMED } from '../core/content';
 
 /**
@@ -8,38 +10,43 @@ import { EXAMS, FEATURED_EXAMS, formatFc, formatUsd, PRICES_CONFIRMED } from '..
  */
 @Component({
   selector: 'app-price-sentence',
-  imports: [RouterLink],
+  imports: [RouterLink, Icon, TrPipe, LocalPathPipe],
   template: `
-    <section class="frame pt-(--section)" aria-labelledby="prix-title">
-      <h2 id="prix-title" class="head">Combien coûte un examen&nbsp;?</h2>
+    <section class="frame py-(--section)" aria-labelledby="prix-title">
+      <div class="card p-6 md:p-10">
+      <div class="flex items-center gap-4">
+        <span class="icon-tile shrink-0"><app-icon name="money" /></span>
+        <h2 id="prix-title" class="head">{{ 'Combien coûte un examen ?' | tr }}</h2>
+      </div>
 
       <div class="grid-12 mt-8 gap-y-6">
-        <div role="group" aria-label="Choisir un examen" class="col-span-12 flex flex-wrap gap-2 lg:col-span-5 lg:flex-col lg:items-start">
+        <div role="group" [attr.aria-label]="'Choisir un examen' | tr" class="col-span-12 flex flex-wrap gap-2 lg:col-span-5 lg:flex-col lg:items-start">
           @for (exam of featured; track exam.id) {
             <button type="button" class="choice" [attr.aria-pressed]="exam.id === selectedId()" (click)="selectedId.set(exam.id)">
-              {{ exam.short }}
+              {{ exam.short | tr }}
             </button>
           }
         </div>
 
         <div class="panel col-span-12 lg:col-span-7" aria-live="polite">
-          <p class="text-lead font-semibold">{{ exam().name }}</p>
+          <p class="text-lead font-semibold">{{ exam().name | tr }}</p>
           <p class="mt-2 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-tight font-semibold text-accent">{{ price() }}</p>
-          <p class="text-muted">soit environ {{ usd() }}</p>
+          <p class="text-muted">{{ 'soit environ' | tr }} {{ usd() }}</p>
           <ul class="mt-5 space-y-1.5">
             @for (line of details(); track line) {
-              <li>{{ line }}</li>
+              <li>{{ line | tr }}</li>
             }
           </ul>
           @if (!pricesConfirmed) {
-            <p class="mt-5 text-small text-muted">Tarifs indicatifs, confirmés avant l’ouverture.</p>
+            <p class="mt-5 text-small text-muted">{{ 'Tarifs indicatifs, confirmés avant l’ouverture.' | tr }}</p>
           }
         </div>
       </div>
 
       @if (linkToPrices()) {
-        <p class="mt-6"><a class="link font-medium" routerLink="/tarifs">Voir tous les prix</a></p>
+        <p class="mt-6"><a class="link inline-flex items-center gap-1.5 font-medium" [routerLink]="'/tarifs' | lp">{{ 'Voir tous les prix' | tr }} <app-icon name="arrow" [size]="18" /></a></p>
       }
+      </div>
     </section>
   `,
   styles: `
@@ -78,12 +85,14 @@ export class PriceSentence {
   protected readonly exam = computed(() => EXAMS.find((e) => e.id === this.selectedId())!);
   protected readonly price = computed(() => formatFc(this.exam().priceFc));
   protected readonly usd = computed(() => formatUsd(this.exam().priceFc));
+  private readonly i18n = inject(I18n);
   protected readonly details = computed(() => {
     const e = this.exam();
+    const t = (s: string) => this.i18n.t(s);
     return [
-      `Résultat ${e.delay}`,
-      e.fasting ? 'Venez à jeun (ne mangez pas le matin)' : 'Pas besoin d’être à jeun',
-      e.tube ? `Prélèvement : ${e.tube.label}` : 'Sans prise de sang',
+      `${t('Résultat')} ${t(e.delay)}`,
+      t(e.fasting ? 'Venez à jeun (ne mangez pas le matin)' : 'Pas besoin d’être à jeun'),
+      e.tube ? `${t('Prélèvement')} : ${t(e.tube.label)}` : t('Sans prise de sang'),
     ];
   });
 }

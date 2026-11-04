@@ -2,3 +2,13 @@ instructions
 .agents/
 .taste-skill/
 skills-lock.json
+site-web/.vscode
+site-web/CLAUDE.md
+site-web/.editorconfig
+site-web/.gitignore
+site-web/.mcp.json
+site-web/.postcssrc.json
+site-web/.prettierrc
+site-web/.vscode/extensions.json
+site-web/.vscode/launch.json
+site-web/.vscode/tasks.json

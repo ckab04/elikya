@@ -1,5 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
+import { TrPipe, LocalPathPipe } from '../../core/i18n';
 import { RouterLink } from '@angular/router';
 import { PHOTOS } from '../../core/photos';
 import { Icon } from '../../shared/icon';
@@ -8,13 +9,13 @@ import { Reveal } from '../../shared/reveal';
 /** The three services as cards, each with its picture and a link to the details. */
 @Component({
   selector: 'app-services-overview',
-  imports: [NgOptimizedImage, RouterLink, Icon, Reveal],
+  imports: [NgOptimizedImage, RouterLink, Icon, Reveal, TrPipe, LocalPathPipe],
   template: `
     <section class="container-site py-(--section)" aria-labelledby="services-title">
       <div class="text-center">
-        <h2 id="services-title" class="head" appReveal>Nos prestations</h2>
+        <h2 id="services-title" class="head" appReveal>{{ 'Nos prestations' | tr }}</h2>
         <p class="mx-auto mt-3 max-w-[52ch] text-muted" appReveal="1">
-          Trois domaines pour accompagner les patients et les médecins de la Funa.
+          {{ 'Trois domaines pour accompagner les patients et les médecins de la Funa.' | tr }}
         </p>
       </div>
       <ul class="mt-10 grid gap-6 md:grid-cols-3">
@@ -27,14 +28,14 @@ import { Reveal } from '../../shared/reveal';
               [height]="s.photo.height"
               sizes="(max-width: 767px) 92vw, 30vw"
               [style.object-position]="s.position"
-              [alt]="s.photo.alt"
+              [alt]="s.photo.alt | tr"
             />
             <div class="flex grow flex-col p-6">
               <span class="icon-tile -mt-12 border-4 border-white bg-surface"><app-icon [name]="s.icon" /></span>
-              <h3 class="mt-3 text-lead font-semibold">{{ s.title }}</h3>
-              <p class="mt-2 grow text-muted">{{ s.text }}</p>
-              <a class="link mt-5 inline-flex items-center gap-1.5 font-medium" [routerLink]="s.link">
-                {{ s.linkLabel }} <app-icon name="arrow" [size]="18" />
+              <h3 class="mt-3 text-lead font-semibold">{{ s.title | tr }}</h3>
+              <p class="mt-2 grow text-muted">{{ s.text | tr }}</p>
+              <a class="link mt-5 inline-flex items-center gap-1.5 font-medium" [routerLink]="s.link | lp">
+                {{ s.linkLabel | tr }} <app-icon name="arrow" [size]="18" />
               </a>
             </div>
           </li>

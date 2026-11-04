@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
+import { TrPipe } from '../../core/i18n';
 import { Reveal } from '../../shared/reveal';
 
 /** The visit in four plain steps: what to bring, how long it takes, how the result arrives. */
 @Component({
   selector: 'app-steps',
-  imports: [Reveal],
+  imports: [Reveal, TrPipe],
   template: `
     <section class="container-site py-(--section)" aria-labelledby="visite-title">
-      <h2 id="visite-title" class="head text-center" appReveal>Comment se passe votre examen&nbsp;?</h2>
+      <h2 id="visite-title" class="head text-center" appReveal>{{ 'Comment se passe votre examen ?' | tr }}</h2>
       <ol class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         @for (step of steps; track step.title; let i = $index) {
           <li class="card p-6" [appReveal]="i">
             <span class="num" aria-hidden="true">{{ i + 1 }}</span>
-            <h3 class="mt-4 text-lead font-semibold">{{ step.title }}</h3>
-            <p class="mt-2 text-muted">{{ step.text }}</p>
+            <h3 class="mt-4 text-lead font-semibold">{{ step.title | tr }}</h3>
+            <p class="mt-2 text-muted">{{ step.text | tr }}</p>
           </li>
         }
       </ol>

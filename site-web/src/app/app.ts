@@ -1,15 +1,18 @@
 import { afterNextRender, Component, ElementRef, inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, skip } from 'rxjs';
+import { TrPipe } from './core/i18n';
 import { Seo } from './core/seo';
 import { Footer } from './layout/footer';
 import { Header } from './layout/header';
+import { LangBar } from './shared/lang-bar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, LangBar, Header, Footer, TrPipe],
   template: `
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ 'Aller au contenu' | tr }}</a>
+    <app-lang-bar />
     <app-header />
     <main #main id="contenu" tabindex="-1">
       <router-outlet />

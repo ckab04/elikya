@@ -1,9 +1,9 @@
-import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
+import { TrPipe, LocalPathPipe } from '../core/i18n';
 import { RouterLink } from '@angular/router';
 import { EXAMS, FC_PER_USD, formatFc, formatUsd, KINDS, PRICES_CONFIRMED, SampleKind } from '../core/content';
-import { PHOTOS } from '../core/photos';
 import { ContactBand } from '../shared/contact-band';
+import { Icon, IconName } from '../shared/icon';
 import { PageTitle } from '../shared/page-title';
 import { PriceSentence } from '../shared/price-sentence';
 import { Reveal } from '../shared/reveal';
@@ -11,89 +11,81 @@ import { Reveal } from '../shared/reveal';
 /** The whole price list, in Congolese francs first: the live sentence, then every exam. */
 @Component({
   selector: 'app-tarifs',
-  imports: [NgOptimizedImage, RouterLink, PageTitle, PriceSentence, ContactBand, Reveal],
+  imports: [RouterLink, PageTitle, PriceSentence, ContactBand, Reveal, Icon, TrPipe, LocalPathPipe],
   template: `
-    <app-page-title title="Tarifs">
-      Le prix de chaque examen, affiché avant que vous veniez. Paiement en francs congolais ou en dollars.
+    <app-page-title [title]="'Tarifs' | tr">
+      {{ 'Le prix de chaque examen, affiché avant que vous veniez. Paiement en francs congolais ou en dollars.' | tr }}
     </app-page-title>
 
     <app-price-sentence [linkToPrices]="false" />
 
-    <figure class="frame mt-12 overflow-clip">
-      <img
-        class="aspect-[21/9] w-full bg-surface object-cover max-md:aspect-video"
-        [ngSrc]="photos.quartier.id"
-        [width]="photos.quartier.width"
-        [height]="photos.quartier.height"
-        sizes="100vw"
-        style="object-position: 50% 60%"
-        [alt]="photos.quartier.alt"
-      />
-    </figure>
+    <section class="band py-(--section)" aria-labelledby="liste-title">
+      <div class="frame">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="liste-title" class="head" appReveal>{{ 'Tous les examens' | tr }}</h2>
+          <p class="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-small text-muted" appReveal="1">
+            <app-icon name="money" [size]="18" />
+            @if (!pricesConfirmed) {
+              {{ 'Tarifs indicatifs ·' | tr }}
+            }
+            {{ '1 $ =' | tr }} {{ rate }}{{ ' FC' | tr }}
+          </p>
+        </div>
 
-    <section class="frame grid-12 gap-y-12 pt-(--section)" aria-labelledby="liste-title">
-      <div class="col-span-12 md:col-span-4">
-        <h2 id="liste-title" class="head" appReveal>Tous les examens</h2>
-        <p class="mt-6 max-w-[34ch]" appReveal="1">
-          @if (!pricesConfirmed) {
-            Tarifs indicatifs, confirmés avant l’ouverture.
+        <div class="mt-8 grid gap-6 lg:grid-cols-2">
+          @for (kind of kinds; track kind; let i = $index) {
+            <div class="card p-6 md:p-8" [appReveal]="i">
+              <table class="w-full">
+                <caption class="pb-4 text-left">
+                  <span class="flex items-center gap-3 text-lead font-semibold">
+                    <span class="icon-tile size-10!"><app-icon [name]="icons[kind]" [size]="20" /></span>{{ kind | tr }}
+                  </span>
+                </caption>
+                <thead class="visually-hidden">
+                  <tr><th scope="col">{{ 'Examen' | tr }}</th><th scope="col">{{ 'Prix en francs' | tr }}</th><th scope="col">{{ 'En dollars' | tr }}</th></tr>
+                </thead>
+                <tbody>
+                  @for (exam of byKind(kind); track exam.id) {
+                    <tr class="row">
+                      <th scope="row" class="py-3 pr-4 text-left align-top font-medium">
+                        {{ exam.name | tr }}
+                        <span class="block text-small font-normal text-muted">{{ 'Résultat' | tr }} {{ exam.delay | tr }}{{ (exam.fasting ? ', à jeun' : '') | tr }}</span>
+                      </th>
+                      <td class="py-3 text-right align-top font-semibold whitespace-nowrap text-accent">{{ fc(exam.priceFc) }}</td>
+                      <td class="w-16 py-3 text-right align-top whitespace-nowrap text-small text-muted">{{ usd(exam.priceFc) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
           }
-          L’équivalent en dollars est calculé à {{ rate }} FC pour 1 $.
-        </p>
-        <img
-          class="mt-10 aspect-4/5 w-3/4 bg-surface object-cover max-md:hidden"
-          [ngSrc]="photos.echo.id"
-          [width]="photos.echo.width"
-          [height]="photos.echo.height"
-          sizes="22vw"
-          [alt]="photos.echo.alt"
-          appReveal="2"
-        />
-        <img
-          class="mt-6 aspect-4/5 w-3/4 bg-surface object-cover max-md:hidden"
-          [ngSrc]="photos.prelevement.id"
-          [width]="photos.prelevement.width"
-          [height]="photos.prelevement.height"
-          sizes="22vw"
-          [alt]="photos.prelevement.alt"
-          appReveal="3"
-        />
-      </div>
+        </div>
 
-      <div class="col-span-12 space-y-16 md:col-span-7 md:col-start-6">
-        @for (kind of kinds; track kind) {
-          <table class="w-full" appReveal>
-            <caption class="pb-4 text-left text-lead font-semibold">{{ kind }}</caption>
-            <thead class="visually-hidden">
-              <tr><th scope="col">Examen</th><th scope="col">Résultat</th><th scope="col">Prix en francs</th><th scope="col">En dollars</th></tr>
-            </thead>
-            <tbody>
-              @for (exam of byKind(kind); track exam.id) {
-                <tr>
-                  <th scope="row" class="py-2.5 pr-4 text-left align-top font-normal">
-                    {{ exam.name }}
-                    <span class="block text-small text-muted">Résultat {{ exam.delay }}{{ exam.fasting ? ', à jeun' : '' }}</span>
-                  </th>
-                  <td class="py-2.5 text-right align-top font-medium whitespace-nowrap">{{ fc(exam.priceFc) }}</td>
-                  <td class="w-20 py-2.5 text-right align-top whitespace-nowrap text-muted">{{ usd(exam.priceFc) }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        }
-        <p appReveal>
-          Un examen manque ? <a class="link font-medium" routerLink="/contact">Demandez-nous</a>. Hôpitaux et centres de
-          santé : <a class="link font-medium" routerLink="/partenaires">tarifs sous convention</a>.
-        </p>
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+          <p class="card flex items-start gap-4 p-6" appReveal>
+            <span class="icon-tile shrink-0"><app-icon name="chat" /></span>
+            <span>{{ 'Un examen manque dans la liste ?' | tr }} <a class="link font-medium" [routerLink]="'/contact' | lp">{{ 'Demandez-nous' | tr }}</a>{{ ', nous vous donnons le prix.' | tr }}</span>
+          </p>
+          <p class="card flex items-start gap-4 p-6" appReveal="1">
+            <span class="icon-tile shrink-0"><app-icon name="building" /></span>
+            <span>{{ 'Hôpitaux, centres de santé, entreprises :' | tr }} <a class="link font-medium" [routerLink]="'/partenaires' | lp">{{ 'tarifs sous convention' | tr }}</a>.</span>
+          </p>
+        </div>
       </div>
     </section>
 
     <app-contact-band />
   `,
+  styles: `
+    .row + .row > * {
+      border-top: 1px solid #e6edf6;
+    }
+  `,
+
 })
 export class Tarifs {
   protected readonly kinds = KINDS;
-  protected readonly photos = PHOTOS;
+  protected readonly icons: Record<SampleKind, IconName> = { Sang: 'drop', Urines: 'cup', Selles: 'cup', Échographie: 'wave' };
   protected readonly pricesConfirmed = PRICES_CONFIRMED;
   protected readonly rate = new Intl.NumberFormat('fr-FR').format(FC_PER_USD).replace(/\u202f/g, '\u00a0');
   protected readonly fc = formatFc;

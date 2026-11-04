@@ -1,10 +1,11 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, DOCUMENT, inject, signal } from '@angular/core';
+import { TrPipe } from '../core/i18n';
 import { ActivatedRoute } from '@angular/router';
 import { form, FormField, FormRoot, maxLength, minLength, required } from '@angular/forms/signals';
-import { PHOTOS, VIDEO_AUBE } from '../core/photos';
+import { PHOTOS } from '../core/photos';
 import { SITE } from '../core/site.config';
-import { Autoplay } from '../shared/autoplay';
+import { Icon } from '../shared/icon';
 import { PageTitle } from '../shared/page-title';
 import { Reveal } from '../shared/reveal';
 
@@ -35,7 +36,7 @@ const isSubject = (v: string | null): v is Subject => v !== null && Object.hasOw
  */
 @Component({
   selector: 'app-contact',
-  imports: [NgOptimizedImage, FormField, FormRoot, PageTitle, Reveal, Autoplay],
+  imports: [NgOptimizedImage, FormField, FormRoot, PageTitle, Reveal, Icon, TrPipe],
   templateUrl: './contact.html',
   styles: `
     .field label,
@@ -95,7 +96,6 @@ const isSubject = (v: string | null): v is Subject => v !== null && Object.hasOw
 export class Contact {
   protected readonly site = SITE;
   protected readonly photos = PHOTOS;
-  protected readonly video = VIDEO_AUBE;
   protected readonly subjects = Object.entries(SUBJECT_LABELS) as [Subject, string][];
   protected readonly sent = signal(false);
 
