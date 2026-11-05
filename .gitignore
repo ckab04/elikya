@@ -8,7 +8,6 @@ site-web/.nvmrc
 site-web/.editorconfig
 site-web/.gitignore
 site-web/.mcp.json
-site-web/.postcssrc.json
 site-web/.prettierrc
 site-web/.vscode/extensions.json
 site-web/.vscode/launch.json
