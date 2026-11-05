@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { TrPipe, LocalPathPipe } from '../core/i18n';
 import { RouterLink } from '@angular/router';
-import { CREDITS } from '../core/photos';
 import { SITE } from '../core/site.config';
 import { NAV_LINKS } from './header';
 
@@ -42,23 +41,13 @@ import { NAV_LINKS } from './header';
         </nav>
       </div>
 
-      <div class="container-site flex flex-wrap justify-between gap-x-8 gap-y-3 border-t border-white/15 py-8 text-small text-white/75">
-        <p class="max-w-[90ch]">
-          {{ 'Photos et vidéo :' | tr }}
-          @for (c of credits; track c.page; let last = $last) {
-            <a class="link text-white!" [href]="c.page">{{ '« ' | tr }}{{ c.title }}{{ ' »' | tr }}</a> {{ 'par' | tr }} {{ c.author }},
-            <a class="link text-white!" [href]="c.licenceUrl">{{ c.licence }}</a>{{ last ? '.' : ' ;' }}
-          }
-        </p>
-        <p>© {{ year }} {{ site.name | tr }}</p>
-      </div>
+
     </footer>
   `,
 })
 export class Footer {
   protected readonly site = SITE;
   protected readonly links = NAV_LINKS;
-  protected readonly credits = CREDITS;
   // Calculée au prérendu : reconstruire le site chaque année suffit.
   protected readonly year = new Date().getFullYear();
 }

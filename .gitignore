@@ -4,6 +4,7 @@ instructions
 skills-lock.json
 site-web/.vscode
 site-web/CLAUDE.md
+site-web/.nvmrc
 site-web/.editorconfig
 site-web/.gitignore
 site-web/.mcp.json

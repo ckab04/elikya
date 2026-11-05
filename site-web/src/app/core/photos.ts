@@ -36,11 +36,4 @@ export const VIDEO_AUBE = {
   label: 'Un quartier de Kinshasa, du jour à la nuit, en accéléré',
 };
 
-export const CREDITS: readonly Credit[] = [
-  { title: 'EDTA Tube for CBC', author: 'Ajay Kumar Chaurasiya', licence: 'CC BY-SA 4.0', licenceUrl: 'https://creativecommons.org/licenses/by-sa/4.0/', page: 'https://commons.wikimedia.org/w/index.php?curid=113879137' },
-  { title: 'Microscope dans un laboratoire', author: 'Adoscam', licence: 'CC BY-SA 4.0', licenceUrl: 'https://creativecommons.org/licenses/by-sa/4.0', page: 'https://commons.wikimedia.org/wiki/File:Microscope_dans_un_laboratoire.jpg' },
-  { title: 'A medical ultrasound linear array probe', author: 'Harrison Keely', licence: 'CC BY 4.0', licenceUrl: 'https://creativecommons.org/licenses/by/4.0', page: 'https://commons.wikimedia.org/wiki/File:A_medical_ultrasound_linear_array_probe,_scan_head,_transducer.jpg' },
-  { title: 'Kinshasa', author: 'Mamadou Sacko', licence: 'CC BY-SA 4.0', licenceUrl: 'https://creativecommons.org/licenses/by-sa/4.0', page: 'https://commons.wikimedia.org/wiki/File:Kinshasa.jpg' },
-  { title: 'Vacutainer with blood collection tube', author: 'Whispyhistory', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/us/deed.en/', page: 'https://commons.wikimedia.org/w/index.php?curid=141417955' },
-  { title: 'Hyperlapse Kinshasa mars 2020', author: 'Mamadou Sacko', licence: 'CC BY-SA 4.0', licenceUrl: 'https://creativecommons.org/licenses/by-sa/4.0', page: 'https://commons.wikimedia.org/wiki/File:Hyperlapse_Kinshasa_mars_2020.webm' },
-];
+
